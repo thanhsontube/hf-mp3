@@ -3,9 +3,13 @@ package edu.hfmp3;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.sonnt_commonandroid.utils.FilterLog;
+
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.SearchRecentSuggestions;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -22,6 +26,7 @@ import edu.hfmp3.drawer.DtoDrawerMain;
 import edu.hfmp3.main.FragmentMain;
 
 public class MainActivity extends ActionBarActivity {
+	private static final String TAG = "MainActivity";
 	ActionBar actionBar;
 	ActionBarDrawerToggle toggle;
 	DrawerLayout drawerLayout;
@@ -29,9 +34,12 @@ public class MainActivity extends ActionBarActivity {
 	List<DtoDrawerMain> listDrawer = new ArrayList<DtoDrawerMain>();
 	AdapterDrawerMain adapterDrawer;
 	Context context;
+	FilterLog log = new FilterLog(TAG);
+	SearchView searchView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        log.d("NECVN>>>" + "onCreate");
 //        setContentView(R.layout.activity_main);
         setContentView(R.layout.navigation_drawer_main);
         context = this;
@@ -67,8 +75,28 @@ public class MainActivity extends ActionBarActivity {
         
         FragmentMain fragmentMain = new FragmentMain();
         getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragmentMain).commit();
-        
+        handleIntent(getIntent());
     }
+    
+    @Override
+    protected void onNewIntent(Intent intent) {
+    	log.d("NECVN>>>" + "onNewIntent");
+    	super.onNewIntent(intent);
+    	handleIntent(intent);
+    }
+
+	public void handleIntent(Intent intent) {
+		log.d("NECVN>>>" + "handleIntent");
+		if(Intent.ACTION_SEARCH.equals(intent.getAction())){
+    		String query = intent.getStringExtra(SearchManager.QUERY);
+    		log.d("NECVN>>>" + "query:" + query);
+    		
+    		SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this, SearchProvider.AUTHEN, SearchProvider.MODE);
+    		suggestions.saveRecentQuery(query, null);
+    		searchView.onActionViewCollapsed();
+    		searchView.setQuery("", false);
+    	}
+	}
     
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -80,11 +108,11 @@ public class MainActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem item = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+        searchView = (SearchView) MenuItemCompat.getActionView(item);
         
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(false);
+        searchView.setSubmitButtonEnabled(true);
         return true;
     }
     

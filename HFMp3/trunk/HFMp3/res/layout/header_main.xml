@@ -5,8 +5,8 @@
     android:orientation="vertical" >
     <ImageView 
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:src="@drawable/zingmp3_plashscreen2"
+        android:layout_height="150dp"
+        android:src="@drawable/bg1"
         android:scaleType="centerCrop"/>
 
 </FrameLayout>

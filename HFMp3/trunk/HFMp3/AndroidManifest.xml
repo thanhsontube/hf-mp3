@@ -15,13 +15,24 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="edu.hfmp3.MainActivity"
-            android:label="@string/my_music" >
+            android:label="@string/my_music"
+            android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH"/>
+            </intent-filter>
+            <meta-data 
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
         </activity>
+        
+        <provider 
+            android:name="edu.hfmp3.SearchProvider"
+            android:authorities="authen"></provider>
     </application>
 
 </manifest>
