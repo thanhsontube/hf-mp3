@@ -3,8 +3,6 @@ package edu.hfmp3;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.sonnt_commonandroid.utils.FilterLog;
-
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -19,11 +17,17 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.Toast;
+
+import com.example.sonnt_commonandroid.utils.FilterLog;
+
 import edu.hfmp3.drawer.AdapterDrawerMain;
 import edu.hfmp3.drawer.DtoDrawerMain;
 import edu.hfmp3.main.FragmentMain;
+import edu.hfmp3.main.FragmentMain.InterfaceFragmentMain;
+import edu.hfmp3.offline.FragmentOffline;
 
 public class MainActivity extends ActionBarActivity {
 	private static final String TAG = "MainActivity";
@@ -36,12 +40,17 @@ public class MainActivity extends ActionBarActivity {
 	Context context;
 	FilterLog log = new FilterLog(TAG);
 	SearchView searchView;
+	boolean isnavigatorDrawer = true;
+	
+	//fragment 
+	FragmentMain fragmentMain;
+	FragmentOffline fragmentOffline;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         log.d("NECVN>>>" + "onCreate");
-//        setContentView(R.layout.activity_main);
-        setContentView(R.layout.navigation_drawer_main);
+        setContentView(R.layout.activity_main);
+//        setContentView(R.layout.navigation_drawer_main);
         context = this;
         
         
@@ -68,15 +77,54 @@ public class MainActivity extends ActionBarActivity {
         
         listviewDrawer = (ListView) findViewById(R.id.listview_drawer);
         listviewDrawer.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        listviewDrawer.setSelected(true);
+        listviewDrawer.setOnItemClickListener(itemDrawerClick);
         initDrawer();
         adapterDrawer = new AdapterDrawerMain(context, listDrawer);
         listviewDrawer.setAdapter(adapterDrawer);
         
-        FragmentMain fragmentMain = new FragmentMain();
-        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragmentMain).commit();
+        fragmentMain = FragmentMain.newInstance(0);
+        getSupportFragmentManager().beginTransaction().add(R.id.content_frame, fragmentMain).commit();
+        fragmentMain.setOnFragmentMain(new InterfaceFragmentMain() {
+        	
+        	@Override
+        	public void onItemClick(int pos, String s) {
+        		log.d("NECVN>>>" + "click at pos:" + pos + ";s:" + s);
+        		isnavigatorDrawer = false;
+        		fragmentOffline = FragmentOffline.newInstance(pos);
+//        		toggle.setDrawerIndicatorEnabled(false);
+        		getSupportFragmentManager().beginTransaction().replace(R.id.content_frame	, fragmentOffline).addToBackStack(null).commit();
+        		actionBar.setDisplayHomeAsUpEnabled(true);
+        		searchView.setVisibility(View.GONE);
+        		invalidateOptionsMenu();
+        	}
+        });
         handleIntent(getIntent());
     }
+    public boolean onPrepareOptionsMenu(Menu menu) {
+    	log.d("NECVN>>>" + "onPrepareOptionsMenu");
+    	if(isnavigatorDrawer){
+    		toggle.setDrawerIndicatorEnabled(true);
+//    		drawerLayout.setVisibility(View.VISIBLE);
+    	}else{
+    		toggle.setDrawerIndicatorEnabled(false);
+//    		drawerLayout.setVisibility(View.GONE);
+    	}
+    	
+		return false;
+    	
+    };
+    
+    OnItemClickListener itemDrawerClick = new OnItemClickListener() {
+
+		@Override
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+			log.d("NECVN>>>" + "click :" + arg2);
+			listviewDrawer.setItemChecked(arg2, true);
+			fragmentOffline = FragmentOffline.newInstance(1);
+			getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragmentOffline).addToBackStack(null).commit();
+			drawerLayout.closeDrawer(listviewDrawer);
+		}
+	};
     
     @Override
     protected void onNewIntent(Intent intent) {
@@ -123,7 +171,11 @@ public class MainActivity extends ActionBarActivity {
     	}
     	switch (item.getItemId()) {
 		case android.R.id.home:
-			Toast.makeText(getApplication(), "up", Toast.LENGTH_SHORT).show();
+//			Toast.makeText(getApplication(), "up", Toast.LENGTH_SHORT).show();
+			getSupportFragmentManager().popBackStack();
+			isnavigatorDrawer = true;
+			searchView.setVisibility(View.VISIBLE);
+			invalidateOptionsMenu();
 			break;
 
 		default:
