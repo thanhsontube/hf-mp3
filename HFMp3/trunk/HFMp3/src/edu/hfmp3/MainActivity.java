@@ -35,7 +35,7 @@ public class MainActivity extends ActionBarActivity {
 	ActionBarDrawerToggle toggle;
 	DrawerLayout drawerLayout;
 	ListView listviewDrawer;
-	List<DtoDrawerMain> listDrawer = new ArrayList<DtoDrawerMain>();
+	List<DtoDrawerMain> listDrawer;
 	AdapterDrawerMain adapterDrawer;
 	Context context;
 	FilterLog log = new FilterLog(TAG);
@@ -90,11 +90,10 @@ public class MainActivity extends ActionBarActivity {
         	public void onItemClick(int pos, String s) {
         		log.d("NECVN>>>" + "click at pos:" + pos + ";s:" + s);
         		isnavigatorDrawer = false;
-        		fragmentOffline = FragmentOffline.newInstance(pos);
+        		fragmentOffline = FragmentOffline.newInstance(pos, getSupportFragmentManager());
 //        		toggle.setDrawerIndicatorEnabled(false);
         		getSupportFragmentManager().beginTransaction().replace(R.id.content_frame	, fragmentOffline).addToBackStack(null).commit();
         		actionBar.setDisplayHomeAsUpEnabled(true);
-        		searchView.setVisibility(View.GONE);
         		invalidateOptionsMenu();
         	}
         });
@@ -110,7 +109,7 @@ public class MainActivity extends ActionBarActivity {
 //    		drawerLayout.setVisibility(View.GONE);
     	}
     	
-		return false;
+		return true;
     	
     };
     
@@ -120,7 +119,7 @@ public class MainActivity extends ActionBarActivity {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 			log.d("NECVN>>>" + "click :" + arg2);
 			listviewDrawer.setItemChecked(arg2, true);
-			fragmentOffline = FragmentOffline.newInstance(1);
+			fragmentOffline = FragmentOffline.newInstance(1, getSupportFragmentManager());
 			getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragmentOffline).addToBackStack(null).commit();
 			drawerLayout.closeDrawer(listviewDrawer);
 		}
@@ -141,8 +140,8 @@ public class MainActivity extends ActionBarActivity {
     		
     		SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this, SearchProvider.AUTHEN, SearchProvider.MODE);
     		suggestions.saveRecentQuery(query, null);
-    		searchView.onActionViewCollapsed();
-    		searchView.setQuery("", false);
+//    		searchView.onActionViewCollapsed();
+//    		searchView.setQuery("", false);
     	}
 	}
     
@@ -154,6 +153,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+    	log.d("NECVN>>>" + "onCreateOptionsMenu");
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem item = menu.findItem(R.id.action_search);
         searchView = (SearchView) MenuItemCompat.getActionView(item);
@@ -174,7 +174,6 @@ public class MainActivity extends ActionBarActivity {
 //			Toast.makeText(getApplication(), "up", Toast.LENGTH_SHORT).show();
 			getSupportFragmentManager().popBackStack();
 			isnavigatorDrawer = true;
-			searchView.setVisibility(View.VISIBLE);
 			invalidateOptionsMenu();
 			break;
 
@@ -185,6 +184,7 @@ public class MainActivity extends ActionBarActivity {
     }
     
 	public void initDrawer() {
+		listDrawer = new ArrayList<DtoDrawerMain>();
 		int[] arrDrawer = new int[] { R.drawable.login, R.drawable.music_2, R.drawable.album, R.drawable.video,
 				R.drawable.artist, R.drawable.top, R.drawable.category, R.drawable.setting };
 
@@ -233,6 +233,7 @@ public class MainActivity extends ActionBarActivity {
 		dto = new DtoDrawerMain();
 		dto.title = "Cai Dat";
 		listDrawer.add(dto);
+		
 
 		int i = 0;
 		for (DtoDrawerMain item : listDrawer) {

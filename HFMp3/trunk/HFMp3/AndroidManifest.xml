@@ -16,7 +16,7 @@
         <activity
             android:name="edu.hfmp3.MainActivity"
             android:label="@string/my_music"
-             >
+            android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
