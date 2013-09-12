@@ -67,6 +67,7 @@ public class FragmentOffline extends Fragment{
 		indicator = (TitlePageIndicator) v.findViewById(R.id.indicator);
 		adapter = new AdapterOffline(getFragmentManager());
 		pager.setAdapter(adapter);
+		
 		AlbumFragment albumFragment= AlbumFragment.newInstance("Playlist");
 		adapter.addTab(albumFragment);
 		
@@ -78,6 +79,7 @@ public class FragmentOffline extends Fragment{
 		
 		AlbumFragment albumFragment3= AlbumFragment.newInstance("Nghe Si");
 		adapter.addTab(albumFragment3);
+		
 		pager.setOffscreenPageLimit(adapter.getCount());
 		initIndicator();
 		
