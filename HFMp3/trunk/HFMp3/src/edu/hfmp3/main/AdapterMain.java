@@ -2,7 +2,10 @@ package edu.hfmp3.main;
 
 import java.util.List;
 
+import com.example.sonnt_commonandroid.utils.FilterLog;
+
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +20,7 @@ public class AdapterMain extends ArrayAdapter<DtoDrawerMain>{
 	private static final String TAG = "AdapterMain";
 	Context context;
 	List<DtoDrawerMain>list;
-//	FilterLog log = new FilterLog(TAG);
+	FilterLog log = new FilterLog(TAG);
 	public AdapterMain(Context context, List<DtoDrawerMain> list){
 		super(context, 0, list);
 		this.context = context;
@@ -49,6 +52,12 @@ public class AdapterMain extends ArrayAdapter<DtoDrawerMain>{
 			holder.image.setVisibility(View.VISIBLE);
 			holder.count.setVisibility(View.VISIBLE);
 			v.setBackgroundResource(android.R.color.transparent);
+			if(dto.isSelected){
+				log.d("NECVN>>>" + "Color.BLUE");
+				v.setBackgroundResource(Color.BLUE);
+			}else{
+				log.d("NECVN>>>" + "no selected");
+			}
 		}else{
 			holder.image.setVisibility(View.GONE);
 			holder.count.setVisibility(View.GONE);

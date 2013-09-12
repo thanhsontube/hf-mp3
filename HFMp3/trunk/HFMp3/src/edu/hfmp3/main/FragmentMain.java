@@ -53,9 +53,6 @@ public class FragmentMain extends Fragment{
 		View v = inflater.inflate(R.layout.fragment_main, container, false);
 		listview = (ListView) v.findViewById(R.id.listviewMain);
 		init();
-//		String[]arr = getActivity().getResources().getStringArray(R.array.countries_array);
-//		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, arr);
-		
 		adapter = new AdapterMain(getActivity(), list);
 		header = getActivity().getLayoutInflater().inflate(R.layout.header_main, null);
 		listview.addHeaderView(header);

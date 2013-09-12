@@ -50,7 +50,6 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         log.d("NECVN>>>" + "onCreate");
         setContentView(R.layout.activity_main);
-//        setContentView(R.layout.navigation_drawer_main);
         context = this;
         
         
@@ -84,6 +83,7 @@ public class MainActivity extends ActionBarActivity {
         
         fragmentMain = FragmentMain.newInstance(0);
         getSupportFragmentManager().beginTransaction().add(R.id.content_frame, fragmentMain).commit();
+        //item on main screen click
         fragmentMain.setOnFragmentMain(new InterfaceFragmentMain() {
         	
         	@Override
@@ -115,15 +115,22 @@ public class MainActivity extends ActionBarActivity {
 		return true;
     	
     };
-    
+    //when item on navigator drawer click
     OnItemClickListener itemDrawerClick = new OnItemClickListener() {
 
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-			log.d("NECVN>>>" + "click :" + arg2);
+			log.d("NECVN>>>" + "drawe click :" + arg2);
 			listviewDrawer.setItemChecked(arg2, true);
-			fragmentOffline = FragmentOffline.newInstance(1, getSupportFragmentManager());
-			getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragmentOffline).addToBackStack(null).commit();
+			
+			//update list
+			for (DtoDrawerMain dto : listDrawer) {
+				dto.isSelected = false;
+			}
+			listDrawer.get(arg2).isSelected = true;
+			adapterDrawer.notifyDataSetChanged();
+//			fragmentOffline = FragmentOffline.newInstance(1, getSupportFragmentManager());
+//			getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragmentOffline).addToBackStack(null).commit();
 			drawerLayout.closeDrawer(listviewDrawer);
 		}
 	};
