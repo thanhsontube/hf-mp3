@@ -90,6 +90,9 @@ public class MainActivity extends ActionBarActivity {
         	public void onItemClick(int pos, String s) {
         		log.d("NECVN>>>" + "click at pos:" + pos + ";s:" + s);
         		isnavigatorDrawer = false;
+        		if(pos == 5){ //harcode playlist
+        			pos = 1;
+        		}
         		fragmentOffline = FragmentOffline.newInstance(pos, getSupportFragmentManager());
 //        		toggle.setDrawerIndicatorEnabled(false);
         		getSupportFragmentManager().beginTransaction().replace(R.id.content_frame	, fragmentOffline).addToBackStack(null).commit();

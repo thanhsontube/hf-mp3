@@ -27,6 +27,8 @@ public class FragmentOffline extends Fragment{
 	//titlepage indicator
 	TitlePageIndicator indicator;
 	
+	int num;
+	
 	
 	public interface InterfaceFragmentOffline{
 		public void onItemClick(String s);
@@ -53,7 +55,7 @@ public class FragmentOffline extends Fragment{
 		log.d("NECVN>>>" + "onCreate");
 		Bundle bundle = getArguments();
 		if(bundle != null){
-			int num = bundle.getInt(Const.NUM);
+			num = bundle.getInt(Const.NUM);
 			
 			log.d("NECVN>>>" + "num:" + num);
 		}
@@ -81,6 +83,7 @@ public class FragmentOffline extends Fragment{
 		adapter.addTab(albumFragment3);
 		
 		pager.setOffscreenPageLimit(adapter.getCount());
+		pager.setCurrentItem(num -1 );
 		initIndicator();
 		
 		

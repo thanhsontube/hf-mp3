@@ -5,6 +5,7 @@ import java.util.List;
 import edu.hfmp3.R;
 
 import android.content.Context;
+import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -49,7 +50,7 @@ public class AlbumAdapter extends ArrayAdapter<AlbumDto>{
 		
 		@Override
 		public void onClick(View v) {
-			
+			popupMenu(v);
 		}
 	};
 	
@@ -58,5 +59,11 @@ public class AlbumAdapter extends ArrayAdapter<AlbumDto>{
 		TextView txtSong;
 		TextView txtSinger;
 		ImageView imgMore;
+	}
+	
+	public void popupMenu(View v){
+		PopupMenu popupMenu = new PopupMenu(context, v);
+		popupMenu.inflate(R.menu.popup_album);
+		popupMenu.show();
 	}
 }
