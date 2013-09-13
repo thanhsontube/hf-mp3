@@ -25,6 +25,7 @@ import com.example.sonnt_commonandroid.utils.FilterLog;
 
 import edu.hfmp3.drawer.AdapterDrawerMain;
 import edu.hfmp3.drawer.DtoDrawerMain;
+import edu.hfmp3.drawer.album_drawer.GridFragment;
 import edu.hfmp3.main.FragmentMain;
 import edu.hfmp3.main.FragmentMain.InterfaceFragmentMain;
 import edu.hfmp3.offline.FragmentOffline;
@@ -94,10 +95,13 @@ public class MainActivity extends ActionBarActivity {
         			pos = 1;
         		}
         		fragmentOffline = FragmentOffline.newInstance(pos, getSupportFragmentManager());
-//        		toggle.setDrawerIndicatorEnabled(false);
         		getSupportFragmentManager().beginTransaction().replace(R.id.content_frame	, fragmentOffline).addToBackStack(null).commit();
         		actionBar.setDisplayHomeAsUpEnabled(true);
-        		invalidateOptionsMenu();
+        		if(android.os.Build.VERSION.SDK_INT >= 11){
+        			invalidateOptionsMenu();  //call onPrepareOptionsMenu
+        		}else{
+        			updatemenu();
+        		}
         	}
         });
         handleIntent(getIntent());
@@ -106,10 +110,8 @@ public class MainActivity extends ActionBarActivity {
     	log.d("NECVN>>>" + "onPrepareOptionsMenu");
     	if(isnavigatorDrawer){
     		toggle.setDrawerIndicatorEnabled(true);
-//    		drawerLayout.setVisibility(View.VISIBLE);
     	}else{
     		toggle.setDrawerIndicatorEnabled(false);
-//    		drawerLayout.setVisibility(View.GONE);
     	}
     	
 		return true;
@@ -121,16 +123,21 @@ public class MainActivity extends ActionBarActivity {
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 			log.d("NECVN>>>" + "drawe click :" + arg2);
-			listviewDrawer.setItemChecked(arg2, true);
+//			listviewDrawer.setItemChecked(arg2, true);
 			
 			//update list
-			for (DtoDrawerMain dto : listDrawer) {
-				dto.isSelected = false;
+//			for (DtoDrawerMain dto : listDrawer) {
+//				dto.isSelected = false;
+//			}
+//			listDrawer.get(arg2).isSelected = true;
+//			adapterDrawer.notifyDataSetChanged();
+			if(arg2 == 0 || arg2 == 1){
+				getSupportFragmentManager().popBackStack();
+			}else{
+				
+				GridFragment gridFragment = GridFragment.newInstance();
+				getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, gridFragment).addToBackStack(null).commit();
 			}
-			listDrawer.get(arg2).isSelected = true;
-			adapterDrawer.notifyDataSetChanged();
-//			fragmentOffline = FragmentOffline.newInstance(1, getSupportFragmentManager());
-//			getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragmentOffline).addToBackStack(null).commit();
 			drawerLayout.closeDrawer(listviewDrawer);
 		}
 	};
@@ -174,6 +181,13 @@ public class MainActivity extends ActionBarActivity {
         return true;
     }
     
+    public void updatemenu(){
+    	if(isnavigatorDrawer){
+    		toggle.setDrawerIndicatorEnabled(true);
+    	}else{
+    		toggle.setDrawerIndicatorEnabled(false);
+    	}
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	if(toggle.onOptionsItemSelected(item)){
@@ -184,7 +198,7 @@ public class MainActivity extends ActionBarActivity {
 //			Toast.makeText(getApplication(), "up", Toast.LENGTH_SHORT).show();
 			getSupportFragmentManager().popBackStack();
 			isnavigatorDrawer = true;
-			invalidateOptionsMenu();
+			updatemenu();
 			break;
 
 		default:
