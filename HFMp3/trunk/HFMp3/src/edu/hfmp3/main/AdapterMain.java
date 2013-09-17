@@ -2,20 +2,24 @@ package edu.hfmp3.main;
 
 import java.util.List;
 
-import com.example.sonnt_commonandroid.utils.FilterLog;
-
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.sonnt_commonandroid.utils.FilterLog;
+
 import edu.hfmp3.R;
 import edu.hfmp3.drawer.DtoDrawerMain;
 import edu.hfmp3.utils.Const;
-
+/**
+ * dapter main screen
+ * @author sonnt
+ *
+ */
 public class AdapterMain extends ArrayAdapter<DtoDrawerMain>{
 	private static final String TAG = "AdapterMain";
 	Context context;
@@ -52,17 +56,16 @@ public class AdapterMain extends ArrayAdapter<DtoDrawerMain>{
 			holder.image.setVisibility(View.VISIBLE);
 			holder.count.setVisibility(View.VISIBLE);
 			v.setBackgroundResource(android.R.color.transparent);
-			if(dto.isSelected){
-				log.d("NECVN>>>" + "Color.BLUE");
-				v.setBackgroundResource(Color.BLUE);
-			}else{
-				log.d("NECVN>>>" + "no selected");
-			}
+			v.setFocusable(false);
+			v.setFocusableInTouchMode(false);
+			
 		}else{
 			holder.image.setVisibility(View.GONE);
 			holder.count.setVisibility(View.GONE);
-			
-			v.setBackgroundResource(R.color.orange1);
+			holder.txt.setTextColor(R.color.red1);
+			v.setBackgroundResource(R.drawable.layer_bottom);
+			v.setFocusable(true);
+			v.setFocusableInTouchMode(true);
 		}
 		return v;
 	}

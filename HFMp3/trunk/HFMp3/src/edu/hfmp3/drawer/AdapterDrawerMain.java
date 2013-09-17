@@ -9,12 +9,21 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.sonnt_commonandroid.utils.FilterLog;
+
 import edu.hfmp3.R;
 import edu.hfmp3.utils.Const;
-
+/**
+ * adapter drawer layer
+ * @author sonnt
+ *
+ */
 public class AdapterDrawerMain extends ArrayAdapter<DtoDrawerMain>{
+	private static final String TAG = "AdapterDrawerMain";
 	Context context;
 	List<DtoDrawerMain> list;
+	FilterLog log = new FilterLog(TAG);
 	
 	
 	public AdapterDrawerMain(Context context, List<DtoDrawerMain> list){
@@ -24,6 +33,7 @@ public class AdapterDrawerMain extends ArrayAdapter<DtoDrawerMain>{
 	}
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+//		log.d("NECVN>>>" + "getview");
 		View v = convertView;
 		Holder holder = null;
 		if (v == null){
@@ -43,12 +53,17 @@ public class AdapterDrawerMain extends ArrayAdapter<DtoDrawerMain>{
 			holder.image.setImageResource(dto.image);
 			v.setFocusable(false);
 			v.setFocusableInTouchMode(false);
-			v.setBackgroundResource(android.R.color.transparent);
+			if(dto.isSelected){
+				v.setBackgroundResource(R.drawable.layer_drawer);
+			}else{
+				v.setBackgroundColor(android.R.color.transparent);
+			}
 		} else {
 			holder.image.setVisibility(View.GONE);
+			holder.txt.setTextColor(context.getResources().getColor(R.color.red1));
+			v.setBackgroundResource(R.drawable.layer_bottom);
 			v.setFocusable(true);
 			v.setFocusableInTouchMode(true);
-			v.setBackgroundResource(R.color.orange1);
 		}
 		
 		return v;
@@ -63,6 +78,11 @@ public class AdapterDrawerMain extends ArrayAdapter<DtoDrawerMain>{
 	public int getItemViewType(int position) {
 		DtoDrawerMain dto = list.get(position);
 		return dto.isGroup ? Const.TYPE_GROUP : Const.TYPE_ITEM;
+	}
+	
+	public void update(){
+		log.d("NECVN>>>" + "updated");
+		notifyDataSetChanged();
 	}
 	
 	

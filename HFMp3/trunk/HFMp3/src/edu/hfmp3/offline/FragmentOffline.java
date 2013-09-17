@@ -70,8 +70,7 @@ public class FragmentOffline extends Fragment{
 		adapter = new AdapterOffline(getFragmentManager());
 		pager.setAdapter(adapter);
 		
-		AlbumFragment albumFragment= AlbumFragment.newInstance("Playlist");
-		adapter.addTab(albumFragment);
+		
 		
 		AlbumFragment albumFragment1= AlbumFragment.newInstance("Bai Hat");
 		adapter.addTab(albumFragment1);
@@ -81,6 +80,9 @@ public class FragmentOffline extends Fragment{
 		
 		AlbumFragment albumFragment3= AlbumFragment.newInstance("Nghe Si");
 		adapter.addTab(albumFragment3);
+		
+		AlbumFragment albumFragment= AlbumFragment.newInstance("Playlist");
+		adapter.addTab(albumFragment);
 		
 		pager.setOffscreenPageLimit(adapter.getCount());
 		pager.setCurrentItem(num -1 );
@@ -92,9 +94,9 @@ public class FragmentOffline extends Fragment{
 	
 	public void initIndicator(){
 		indicator.setViewPager(pager);
-		indicator.setBackgroundColor(getResources().getColor(R.color.orange1));
+		indicator.setBackgroundColor(getResources().getColor(android.R.color.background_dark));
 		indicator.setTextColor(Color.WHITE);
 		indicator.setSelectedBold(true);
-		indicator.setSelectedColor(Color.BLACK);
+		indicator.setSelectedColor(Color.RED);
 	}
 }

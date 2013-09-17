@@ -40,7 +40,7 @@ public class AlbumAdapter extends ArrayAdapter<AlbumDto>{
 			holder = (Holder) v.getTag();
 		}
 		AlbumDto dto = list.get(position);
-//		holder.imgAvatar
+		holder.imgAvatar.setImageResource(R.drawable.music_2);
 		holder.txtSinger.setText(dto.singer);
 		holder.txtSong.setText(dto.song);
 		return v;

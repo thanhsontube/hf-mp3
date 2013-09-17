@@ -34,16 +34,10 @@ public class AlbumFragment extends ListFragment{
 		}
 		init();
 		adapter = new AlbumAdapter(getActivity(), list);
-		setListAdapter(adapter);
+		if(title.equals("Bai Hat") || title.equals("Nghe Si")){
+			setListAdapter(adapter);
+		}
 	}
-//	@Override
-//	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//		log.d("NECVN>>>" + "onCreateView");
-//		init();
-//		adapter = new AlbumAdapter(getActivity(), list);
-////		getListView().setAdapter(adapter);
-//		return super.onCreateView(inflater, container, savedInstanceState);
-//	}
 	public void init(){
 		log.d("NECVN>>>" + "init");
 		list = new ArrayList<AlbumDto>();
@@ -62,16 +56,16 @@ public class AlbumFragment extends ListFragment{
 		dto = new AlbumDto("What makes you beautiful", "One Direction");
 		list.add(dto);
 		
-		dto = new AlbumDto("Samsung", "Samsung");
+		dto = new AlbumDto("SAI", "My Tam");
 		list.add(dto);
 		
-		dto = new AlbumDto("Con se khong  quen", "Duy Manh");
+		dto = new AlbumDto("Dat Phuong Nam", "My Chi");
 		list.add(dto);
 		
-		dto = new AlbumDto("What makes you beautiful", "One Direction");
+		dto = new AlbumDto("happy together", "...");
 		list.add(dto);
 		
-		dto = new AlbumDto("Samsung", "Samsung");
+		dto = new AlbumDto("Kathy Kathy", "Lam Truong");
 		list.add(dto);
 		
 	}

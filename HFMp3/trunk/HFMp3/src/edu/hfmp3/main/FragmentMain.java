@@ -72,8 +72,8 @@ public class FragmentMain extends Fragment{
 	
 	public void init() {
 		list = new ArrayList<DtoDrawerMain>();
-		int[] arrDrawer = new int[] { R.drawable.login, R.drawable.music_2, R.drawable.yeuthich, R.drawable.video,
-				R.drawable.artist, R.drawable.top, R.drawable.category, R.drawable.setting, R.drawable.upload ,
+		int[] arrDrawer = new int[] { R.drawable.music_2, R.drawable.album, R.drawable.artist, R.drawable.playlist,
+				R.drawable.folder, R.drawable.download, R.drawable.catalog, R.drawable.yeuthich, R.drawable.playlist ,
 				R.drawable.upload};
 		
 		

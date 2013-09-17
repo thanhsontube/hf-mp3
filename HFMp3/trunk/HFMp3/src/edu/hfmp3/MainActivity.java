@@ -46,6 +46,7 @@ public class MainActivity extends ActionBarActivity {
 	//fragment 
 	FragmentMain fragmentMain;
 	FragmentOffline fragmentOffline;
+	GridFragment gridFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,11 +62,13 @@ public class MainActivity extends ActionBarActivity {
 			@Override
 			public void onDrawerClosed(View drawerView) {
 				super.onDrawerClosed(drawerView);
+				actionBar.setTitle("My Music");
 			}
 
 			@Override
 			public void onDrawerOpened(View drawerView) {
 				super.onDrawerOpened(drawerView);
+				actionBar.setTitle("Menu");
 			}
         	
         };
@@ -91,9 +94,7 @@ public class MainActivity extends ActionBarActivity {
         	public void onItemClick(int pos, String s) {
         		log.d("NECVN>>>" + "click at pos:" + pos + ";s:" + s);
         		isnavigatorDrawer = false;
-        		if(pos == 5){ //harcode playlist
-        			pos = 1;
-        		}
+        		pos = pos -1;
         		fragmentOffline = FragmentOffline.newInstance(pos, getSupportFragmentManager());
         		getSupportFragmentManager().beginTransaction().replace(R.id.content_frame	, fragmentOffline).addToBackStack(null).commit();
         		actionBar.setDisplayHomeAsUpEnabled(true);
@@ -125,17 +126,20 @@ public class MainActivity extends ActionBarActivity {
 			log.d("NECVN>>>" + "drawe click :" + arg2);
 //			listviewDrawer.setItemChecked(arg2, true);
 			
-			//update list
-//			for (DtoDrawerMain dto : listDrawer) {
-//				dto.isSelected = false;
-//			}
-//			listDrawer.get(arg2).isSelected = true;
-//			adapterDrawer.notifyDataSetChanged();
+//			update list
+			for (DtoDrawerMain dto : listDrawer) {
+				dto.isSelected = false;
+			}
+			listDrawer.get(arg2).isSelected = true;
+			adapterDrawer.notifyDataSetChanged();
+			log.d("NECVN>>>" + "updated");
 			if(arg2 == 0 || arg2 == 1){
 				getSupportFragmentManager().popBackStack();
 			}else{
 				
-				GridFragment gridFragment = GridFragment.newInstance();
+				if(gridFragment == null){
+					gridFragment = GridFragment.newInstance();
+				}
 				getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, gridFragment).addToBackStack(null).commit();
 			}
 			drawerLayout.closeDrawer(listviewDrawer);
@@ -210,7 +214,7 @@ public class MainActivity extends ActionBarActivity {
 	public void initDrawer() {
 		listDrawer = new ArrayList<DtoDrawerMain>();
 		int[] arrDrawer = new int[] { R.drawable.login, R.drawable.music_2, R.drawable.album, R.drawable.video,
-				R.drawable.artist, R.drawable.top, R.drawable.category, R.drawable.setting };
+				R.drawable.artist, R.drawable.top, R.drawable.catalog, R.drawable.setting };
 
 		DtoDrawerMain dto = new DtoDrawerMain();
 		dto.title = "Dang Nhap";
@@ -219,11 +223,12 @@ public class MainActivity extends ActionBarActivity {
 
 		dto = new DtoDrawerMain();
 		dto.title = "My Music";
+		dto.isSelected = true;
 		listDrawer.add(dto);
 		
 		//group
 		dto = new DtoDrawerMain();
-		dto.title = "ZING MP3";
+		dto.title = "SONNT MUSIC";
 		dto.isGroup = true;
 		listDrawer.add(dto);
 		
