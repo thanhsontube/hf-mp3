@@ -65,6 +65,7 @@ public class FragmentMain extends Fragment{
 
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+			log.d("NECVN>>>" + "onItemClick pos:" + arg2 + ";title:" + list.get(arg2).title);
 			callback.onItemClick(arg2, list.get(arg2).title);
 			
 		}

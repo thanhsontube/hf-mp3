@@ -14,14 +14,18 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.example.sonnt_commonandroid.utils.FilterLog;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import edu.hfmp3.drawer.AdapterDrawerMain;
 import edu.hfmp3.drawer.DtoDrawerMain;
@@ -29,6 +33,7 @@ import edu.hfmp3.drawer.album_drawer.GridFragment;
 import edu.hfmp3.main.FragmentMain;
 import edu.hfmp3.main.FragmentMain.InterfaceFragmentMain;
 import edu.hfmp3.offline.FragmentOffline;
+import edu.hfmp3.player.PlayerFragment;
 
 public class MainActivity extends ActionBarActivity {
 	private static final String TAG = "MainActivity";
@@ -41,19 +46,39 @@ public class MainActivity extends ActionBarActivity {
 	Context context;
 	FilterLog log = new FilterLog(TAG);
 	SearchView searchView;
-	boolean isnavigatorDrawer = true;
 	
 	//fragment 
 	FragmentMain fragmentMain;
 	FragmentOffline fragmentOffline;
 	GridFragment gridFragment;
+	PlayerFragment playerFragment;
+	
+	//layer player
+	View llPlayer;
+	
+	//flag ishow control player on bottom
+	boolean isShowPlayer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         log.d("NECVN>>>" + "onCreate");
         setContentView(R.layout.activity_main);
         context = this;
-        
+        configImageLoader();
+        //player control
+        llPlayer = findViewById(R.id.llPlayer);
+		llPlayer.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+//				if(playerFragment == null){
+//				}
+				playerFragment = PlayerFragment.newInstance();
+				getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, playerFragment).addToBackStack(null).commit();
+				isShowPlayer = false;
+				updatemenu(true);
+				
+			}
+		});
         
         //drawerlayout
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -86,34 +111,36 @@ public class MainActivity extends ActionBarActivity {
         listviewDrawer.setAdapter(adapterDrawer);
         
         fragmentMain = FragmentMain.newInstance(0);
-        getSupportFragmentManager().beginTransaction().add(R.id.content_frame, fragmentMain).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragmentMain).commit();
         //item on main screen click
         fragmentMain.setOnFragmentMain(new InterfaceFragmentMain() {
         	
         	@Override
         	public void onItemClick(int pos, String s) {
         		log.d("NECVN>>>" + "click at pos:" + pos + ";s:" + s);
-        		isnavigatorDrawer = false;
         		pos = pos -1;
         		fragmentOffline = FragmentOffline.newInstance(pos, getSupportFragmentManager());
         		getSupportFragmentManager().beginTransaction().replace(R.id.content_frame	, fragmentOffline).addToBackStack(null).commit();
-        		actionBar.setDisplayHomeAsUpEnabled(true);
-        		if(android.os.Build.VERSION.SDK_INT >= 11){
-        			invalidateOptionsMenu();  //call onPrepareOptionsMenu
-        		}else{
-        			updatemenu();
-        		}
+        		updatemenu(true);
         	}
         });
         handleIntent(getIntent());
     }
+    @Override
+    protected void onDestroy() {
+    	log.v("NECVN>>>" + "onDestroy");
+    	super.onDestroy();
+    }
     public boolean onPrepareOptionsMenu(Menu menu) {
     	log.d("NECVN>>>" + "onPrepareOptionsMenu");
-    	if(isnavigatorDrawer){
-    		toggle.setDrawerIndicatorEnabled(true);
-    	}else{
-    		toggle.setDrawerIndicatorEnabled(false);
-    	}
+//    	if(isCanBack){
+//    		toggle.setDrawerIndicatorEnabled(true);
+//    	}else{
+//    		if(actionBar != null){
+//    			actionBar.setDisplayHomeAsUpEnabled(true);
+//    		}
+//    		toggle.setDrawerIndicatorEnabled(false);
+//    	}
     	
 		return true;
     	
@@ -134,13 +161,31 @@ public class MainActivity extends ActionBarActivity {
 			adapterDrawer.notifyDataSetChanged();
 			log.d("NECVN>>>" + "updated");
 			if(arg2 == 0 || arg2 == 1){
-				getSupportFragmentManager().popBackStack();
+//				getSupportFragmentManager().popBackStack();
+				if(fragmentMain == null){
+					fragmentMain = FragmentMain.newInstance(0);
+					fragmentMain.setOnFragmentMain(new InterfaceFragmentMain() {
+			        	
+			        	@Override
+			        	public void onItemClick(int pos, String s) {
+			        		log.d("NECVN>>>" + "click at pos:" + pos + ";s:" + s);
+			        		pos = pos -1;
+			        		fragmentOffline = FragmentOffline.newInstance(pos, getSupportFragmentManager());
+			        		getSupportFragmentManager().beginTransaction().replace(R.id.content_frame	, fragmentOffline).addToBackStack(null).commit();
+			        		updatemenu(true);
+			        	}
+			        });
+					
+				}
+				getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragmentMain).commit();
+				updatemenu(false);
 			}else{
 				
-				if(gridFragment == null){
-					gridFragment = GridFragment.newInstance();
-				}
-				getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, gridFragment).addToBackStack(null).commit();
+//				if(gridFragment == null){
+//				}
+				gridFragment = GridFragment.newInstance();
+				getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, gridFragment).commit();
+				updatemenu(false);
 			}
 			drawerLayout.closeDrawer(listviewDrawer);
 		}
@@ -185,13 +230,23 @@ public class MainActivity extends ActionBarActivity {
         return true;
     }
     
-    public void updatemenu(){
-    	if(isnavigatorDrawer){
-    		toggle.setDrawerIndicatorEnabled(true);
-    	}else{
-    		toggle.setDrawerIndicatorEnabled(false);
-    	}
-    }
+	public void updatemenu(boolean isCanUp) {
+		if (isShowPlayer) {
+			llPlayer.setVisibility(View.VISIBLE);
+		} else {
+			llPlayer.setVisibility(View.GONE);
+		}
+		isShowPlayer = true;
+		if (isCanUp) {
+			if (actionBar != null) {
+				actionBar.setDisplayHomeAsUpEnabled(true);
+			}
+			toggle.setDrawerIndicatorEnabled(false);
+		} else {
+			toggle.setDrawerIndicatorEnabled(true);
+		}
+
+	}
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	if(toggle.onOptionsItemSelected(item)){
@@ -201,8 +256,11 @@ public class MainActivity extends ActionBarActivity {
 		case android.R.id.home:
 //			Toast.makeText(getApplication(), "up", Toast.LENGTH_SHORT).show();
 			getSupportFragmentManager().popBackStack();
-			isnavigatorDrawer = true;
-			updatemenu();
+			if(getSupportFragmentManager().getBackStackEntryCount() > 1){
+				updatemenu(true);
+			}else{
+				updatemenu(false);
+			}
 			break;
 
 		default:
@@ -272,5 +330,22 @@ public class MainActivity extends ActionBarActivity {
 			}
 		}
 	}
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		if(event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
+			if(getSupportFragmentManager().getBackStackEntryCount() > 1){
+				updatemenu(true);
+			}else{
+				updatemenu(false);
+			}
+		}
+		return super.dispatchKeyEvent(event);
+	}
+	
+	public void configImageLoader(){
+		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context).build();
+		ImageLoader.getInstance().init(config);
+	}
+	
     
 }
