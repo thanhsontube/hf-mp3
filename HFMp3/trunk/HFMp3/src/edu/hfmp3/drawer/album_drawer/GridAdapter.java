@@ -2,8 +2,6 @@ package edu.hfmp3.drawer.album_drawer;
 
 import java.util.List;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.sonnt_commonandroid.utils.UrlCommon;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import edu.hfmp3.R;
 import edu.hfmp3.utils.Const;
-import edu.hfmp3.utils.UrlCommon;
 
 public class GridAdapter extends ArrayAdapter<GridDto>{
 	Context context;

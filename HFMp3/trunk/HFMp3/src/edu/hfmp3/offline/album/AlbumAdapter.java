@@ -2,15 +2,6 @@ package edu.hfmp3.offline.album;
 
 import java.util.List;
 
-import com.example.sonnt_commonandroid.utils.FileUtils;
-import com.example.sonnt_commonandroid.utils.FilterLog;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
-
-import edu.hfmp3.R;
-import edu.hfmp3.utils.UrlCommon;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.PopupMenu;
@@ -21,6 +12,14 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.sonnt_commonandroid.utils.FilterLog;
+import com.example.sonnt_commonandroid.utils.UrlCommon;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
+
+import edu.hfmp3.R;
 
 public class AlbumAdapter extends ArrayAdapter<AlbumDto>{
 	private static final String TAG = "AlbumAdapter";
